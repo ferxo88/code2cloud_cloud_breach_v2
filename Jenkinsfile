@@ -39,7 +39,15 @@ pipeline {
             }
         }
         stage('Scanning with Prisma Cloud') {
-            sh "./twistcli images scan --address $PCC_CONSOLE_URL -u $PRISMA_ACCESS_KEY -p $PRISMA_SECRET_KEY --details $ECR_REPOSITORY:$CONTAINER_NAME"
+            steps {
+               withCredentials([
+                  string(credentialsId: 'PCC_CONSOLE_URL', variable: 'PCC_CONSOLE_URL'),
+                  string(credentialsId: 'PRISMA_ACCESS_KEY', variable: 'PRISMA_ACCESS_KEY'),
+                  string(credentialsId: 'PRISMA_SECRET_KEY', variable: 'PRISMA_SECRET_KEY')
+                  ]) {       
+                  sh "./twistcli images scan --address $PCC_CONSOLE_URL -u $PRISMA_ACCESS_KEY -p $PRISMA_SECRET_KEY --details $ECR_REPOSITORY:$CONTAINER_NAME"
+               }      
+            }
         }
       //   stage('Container Scan') {
       //    steps {
