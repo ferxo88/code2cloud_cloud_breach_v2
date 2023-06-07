@@ -25,8 +25,16 @@ pipeline {
             }
         }
         stage('Installing twistcli tool') {
-            sh 'curl -k -u $PRISMA_ACCESS_KEY:$PRISMA_SECRET_KEY --output twistcli https://$PCC_CONSOLE_URL/api/v1/util/twistcli'
-            sh 'chmod a+x twistcli'
+            steps {
+               withCredentials([
+                  string(credentialsId: 'PCC_CONSOLE_URL', variable: 'PCC_CONSOLE_URL'),
+                  string(credentialsId: 'PRISMA_ACCESS_KEY', variable: 'PRISMA_ACCESS_KEY'),
+                  string(credentialsId: 'PRISMA_SECRET_KEY', variable: 'PRISMA_SECRET_KEY')
+                  ]) {
+                  sh 'curl -k -u $PRISMA_ACCESS_KEY:$PRISMA_SECRET_KEY --output twistcli https://$PCC_CONSOLE_URL/api/v1/util/twistcli'
+                  sh 'chmod a+x twistcli'
+               }
+            }
         }
         stage('Scanning with Prisma Cloud') {
             sh "./twistcli images scan --address https://$PCC_CONSOLE_URL -u $PRISMA_ACCESS_KEY -p $PRISMA_SECRET_KEY --details $ECR_REPOSITORY:$CONTAINER_NAME"
