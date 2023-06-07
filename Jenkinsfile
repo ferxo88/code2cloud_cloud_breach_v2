@@ -32,7 +32,7 @@ pipeline {
                   string(credentialsId: 'PRISMA_SECRET_KEY', variable: 'PRISMA_SECRET_KEY')
                   ]) {
                   sh ''' 
-                  curl -k -u $PRISMA_ACCESS_KEY:$PRISMA_SECRET_KEY --output twistcli https://$PCC_CONSOLE_URL/api/v1/util/twistcli
+                  curl -k -u $PRISMA_ACCESS_KEY:$PRISMA_SECRET_KEY --output twistcli $PCC_CONSOLE_URL/api/v1/util/twistcli
                   chmod a+x twistcli
                   '''
                }
